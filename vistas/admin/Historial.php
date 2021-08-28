@@ -33,7 +33,7 @@ include('db.php')
                     </li>
 
                     <li>
-                        <a  href="login.html"><i class="fa fa-home"></i> Salir
+                        <a  href="login.php"><i class="fa fa-home"></i> Salir
 </a>
                     </li>
 

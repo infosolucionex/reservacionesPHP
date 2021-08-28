@@ -1,3 +1,11 @@
+<?php  
+ session_start();  
+ if(isset($_SESSION["user"]))  
+ {  
+      header("location:home.php");  
+ }  
+ 
+ ?>
 
 <!DOCTYPE html>
 <html>
@@ -34,11 +42,11 @@
         <p class="login-box-msg">Ingrese sus datos de Acceso</p>
         <form method="post" id="frmAcceso">
           <div class="form-group has-feedback">
-            <input type="text" id="logina" name="logina" class="form-control" placeholder="Usuario">
+            <input type="text" id="user" name="user" class="form-control" placeholder="Usuario">
             <span class="fa fa-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
-            <input type="password" id="clavea" name="clavea" class="form-control" placeholder="Password">
+            <input type="password" id="pass" name="pass" class="form-control" placeholder="Password">
             <span class="fa fa-key form-control-feedback"></span>
           </div>
           <div class="row">
@@ -56,6 +64,36 @@
 
       </div><!-- /.login-box-body -->
     </div><!-- /.login-box -->
+    <?php
+   include('db.php');
+  
+   
+   if($_SERVER["REQUEST_METHOD"] == "POST") {
+      // username and password sent from form 
+      
+      $myusername = mysqli_real_escape_string($con,$_POST['user']);
+      $mypassword = mysqli_real_escape_string($con,$_POST['pass']); 
+      
+      $sql = "SELECT id FROM login WHERE usname = '$myusername' and pass = '$mypassword'";
+      $result = mysqli_query($con,$sql);
+      $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+      $active = $row['active'];
+      
+      $count = mysqli_num_rows($result);
+      
+      // If result matched $myusername and $mypassword, table row must be 1 row
+		
+      if($count == 1) {
+         
+         $_SESSION['user'] = $myusername;
+         
+         header("location: home.php");
+      }else {
+         echo '<script>alert("Your Login Name or Password is invalid") </script>' ;
+      }
+   }
+?>
+
 
     <!-- jQuery -->
     <script src="../public/js/jquery-3.1.1.min.js"></script>

@@ -6,7 +6,7 @@ include('db.php')
 <head>
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RESERVACION HOTEL Amanecer</title>
+    <title>RESERVACION HOTEL MORENO</title>
 	<!-- Bootstrap Styles-->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
      <!-- FontAwesome Styles-->
@@ -34,7 +34,7 @@ include('db.php')
                     </li>
 
                     <li>
-                        <a  href="login.html"><i class="fa fa-home"></i> Salir
+                        <a  href="login.php"><i class="fa fa-home"></i> Salir
 </a>
                     </li>
 
