@@ -1,5 +1,9 @@
 <?php
-include('db.php')
+include('db.php');
+session_start();
+if (!isset($_SESSION["user"])) {
+    header("location:login.html");
+}
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -36,7 +40,7 @@ include('db.php')
                     </li>
 
                     <li>
-                        <a href="login.php"><i class="fa fa-home"></i> Salir
+                        <a href="cerrarSesion.php"><i class="fa fa-home"></i> Salir
                         </a>
                     </li>
 
@@ -55,6 +59,7 @@ include('db.php')
                         </h1>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <div class="panel panel-primary">
@@ -63,27 +68,35 @@ include('db.php')
 
                             </div>
                             <div class="panel-body">
-                                <div class="form-group">
-                                    <label>Tipo de habitación*</label>
-                                    <select name="troom" class="form-control" required>
-                                        <option value selected></option>
-                                        <option value="Superior Room"> HABITACIÓN SUPERIOR</option>
-                                        <option value="Deluxe Room">HABITACIÓN DE LUJO</option>
-                                        <option value="Guest House">CASA DE HUESPEDES</option>
-                                        <option value="Single Room">HABITACIÓN INDIVIDUAL
-                                        </option>
-                                    </select>
+                                <form name="form" method="post">
                                     <div class="form-group">
-                                        <label>Entrada</label>
-                                        <input name="cin" type="date" class="form-control">
+                                        <label>Tipo de habitación</label>
 
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Salida</label>
-                                        <input name="cout" type="date" class="form-control">
+                                        <select name="cuartos" class="form-control" required>
+                                            <option value selected>Seleccionar</option>
+                                            <?php
+                                            $msql = "SELECT * FROM `habitacion`";
+                                            $mre = mysqli_query($con, $msql);
+                                            while ($mrow = mysqli_fetch_array($mre)) {
+                                            ?>
+                                                <option value="<?php echo $mrow['ID_HABITACION'] ?>"><?php echo $mrow['TIPOHABI'] ?></option>
+                                            <?php
+                                            }
+                                            ?>
+                                        </select>
 
+
+                                        <div class="form-group">
+                                            <label>Entrada</label>
+                                            <input name="fechainicial" type="date" class="form-control">
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Salida</label>
+                                            <input name="fechafinal" type="date" class="form-control">
+
+                                        </div>
                                     </div>
-                                </div>
 
                             </div>
                         </div>
@@ -100,30 +113,27 @@ include('db.php')
                                 </p>
                                 <input type="text" name="code1" title="random code" />
                                 <input type="hidden" name="code" value="<?php echo $Random_code; ?>" />
-                                <input type="submit" name="submit" class="btn btn-primary">
+                                <input type="submit" name="submit" class="btn btn-primary" />
+
+
                                 <?php
                                 if (isset($_POST['submit'])) {
+                                    
                                     $code1 = $_POST['code1'];
                                     $code = $_POST['code'];
                                     if ($code1 != "$code") {
                                         $msg = "Invalide code";
                                     } else {
-
-                                        $con = mysqli_connect("localhost", "root", "", "hotel");
-                                        $check = "SELECT * FROM roombook WHERE email = '$_POST[email]'";
-                                        $rs = mysqli_query($con, $check);
-                                        $data = mysqli_fetch_array($rs, MYSQLI_NUM);
-                                        if ($data[0] > 1) {
-                                            echo "<script type='text/javascript'> alert('El usuario ya existe')</script>";
-                                        } else {
-                                            $new = "Not Conform";
-                                            $newUser = "INSERT INTO `roombook`(`Title`, `FName`, `LName`, `Email`, `National`, `Country`, `Phone`, `TRoom`, `Bed`, `NRoom`, `Meal`, `cin`, `cout`,`stat`,`nodays`) VALUES ('$_POST[title]','$_POST[fname]','$_POST[lname]','$_POST[email]','$_POST[nation]','$_POST[country]','$_POST[phone]','$_POST[troom]','$_POST[bed]','$_POST[nroom]','$_POST[meal]','$_POST[cin]','$_POST[cout]','$new',datediff('$_POST[cout]','$_POST[cin]'))";
-                                            if (mysqli_query($con, $newUser)) {
-                                                echo "<script type='text/javascript'> alert('Su solicitud de reserva ha sido enviadat')</script>";
+                                        $id_rol = $_SESSION["id_rol"];
+                                        $id_persona = $_SESSION["id_persona"];
+                                   
+                                            $newReservation = "INSERT INTO `reservacion` (`id_habitacion`,`cli_id_rol`,`cli_id_persona`,`fechainicio`,`fechafin`,`estado`) VALUES ($_POST[cuartos],$id_rol,$id_persona,'$_POST[fechainicial]','$_POST[fechafinal]',true)";
+                                            if (mysqli_query($con, $newReservation)) {
+                                                echo "<script type='text/javascript'> alert('Su solicitud de reserva ha sido enviada correctamente')</script>";
                                             } else {
-                                                echo "<script type='text/javascript'> alert('Error al agregar usuario en la base de datos')</script>";
+                                                echo "<script type='text/javascript'> alert('Error al realizar reservación')</script>";
                                             }
-                                        }
+                                        
 
                                         $msg = "Tu código es correcto
 ";
@@ -136,26 +146,15 @@ include('db.php')
                         </div>
                     </div>
 
-
                 </div>
-
-
 
             </div>
             <!-- /. PAGE INNER  -->
         </div>
         <!-- /. PAGE WRAPPER  -->
     </div>
-    <!-- /. WRAPPER  -->
-    <!-- JS Scripts-->
-    <!-- jQuery Js -->
-    <script src="assets/js/jquery-1.10.2.js"></script>
-    <!-- Bootstrap Js -->
-    <script src="assets/js/bootstrap.min.js"></script>
-    <!-- Metis Menu Js -->
-    <script src="assets/js/jquery.metisMenu.js"></script>
-    <!-- Custom Js -->
-    <script src="assets/js/custom-scripts.js"></script>
+
+
 
 
 </body>
