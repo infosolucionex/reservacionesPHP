@@ -40,7 +40,7 @@
       </div><!-- /.login-logo -->
       <div class="login-box-body">
         <p class="login-box-msg">Ingrese sus datos de Acceso</p>
-        <form method="post" id="frmAcceso">
+        <form method="post" >
           <div class="form-group has-feedback">
             <input type="text" id="user" name="user" class="form-control" placeholder="Usuario">
             <span class="fa fa-user form-control-feedback"></span>
@@ -64,6 +64,10 @@
 
       </div><!-- /.login-box-body -->
     </div><!-- /.login-box -->
+
+
+   <!-- CODIGO PHP QUE HACE CONEXIÓN CON LA BASE DE DATOS -->
+
     <?php
    include('db.php');
   
@@ -74,35 +78,35 @@
       $myusername = mysqli_real_escape_string($con,$_POST['user']);
       $mypassword = mysqli_real_escape_string($con,$_POST['pass']); 
       
-      $sql = "SELECT id FROM login WHERE usname = '$myusername' and pass = '$mypassword'";
+      $sql = "SELECT * FROM usuarios WHERE nombreusuario = '$myusername' and clave = '$mypassword'";
       $result = mysqli_query($con,$sql);
-      $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-      $active = $row['active'];
+  
+      $row = mysqli_fetch_array($result);
+      $rol = $row['ID_ROL'];
+      $persona = $row['ID_PERSONA'];    
       
       $count = mysqli_num_rows($result);
       
+      
       // If result matched $myusername and $mypassword, table row must be 1 row
 		
-      if($count == 1) {
+      if($rol == 1) {
          
          $_SESSION['user'] = $myusername;
          
          header("location: home.php");
+      }else if($rol == 2){
+        $_SESSION['user'] = $myusername;
+        $_SESSION['id_rol'] = $rol;
+        $_SESSION['id_persona'] = $persona;
+         header("location: reservation.php");
       }else {
-         echo '<script>alert("Your Login Name or Password is invalid") </script>' ;
+        echo '<script>alert("Your Login Name or Password is invalid") </script>' ;
       }
    }
 ?>
 
-
-    <!-- jQuery -->
-    <script src="../public/js/jquery-3.1.1.min.js"></script>
-    <!-- Bootstrap 3.3.5 -->
-    <script src="../public/js/bootstrap.min.js"></script>
-     <!-- Bootbox -->
-    <script src="../public/js/bootbox.min.js"></script>
-
-    <script type="text/javascript" src="scripts/login.js"></script>
+    
 
 
   </body>
