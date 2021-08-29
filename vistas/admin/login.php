@@ -64,6 +64,10 @@
 
       </div><!-- /.login-box-body -->
     </div><!-- /.login-box -->
+
+
+   <!-- CODIGO PHP QUE HACE CONEXIÓN CON LA BASE DE DATOS -->
+
     <?php
    include('db.php');
   
@@ -74,22 +78,24 @@
       $myusername = mysqli_real_escape_string($con,$_POST['user']);
       $mypassword = mysqli_real_escape_string($con,$_POST['pass']); 
       
-      $sql = "SELECT id FROM login WHERE usname = '$myusername' and pass = '$mypassword'";
+      $sql = "SELECT id_rol FROM usuarios WHERE nombreusuario = '$myusername' and clave = '$mypassword'";
       $result = mysqli_query($con,$sql);
       $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-      $active = $row['active'];
+      $rol = $row['id_rol'];
       
       $count = mysqli_num_rows($result);
       
       // If result matched $myusername and $mypassword, table row must be 1 row
 		
-      if($count == 1) {
+      if($rol == 1) {
          
          $_SESSION['user'] = $myusername;
          
          header("location: home.php");
+      }else if($rol == 2){
+         header("location: reservation.php");
       }else {
-         echo '<script>alert("Your Login Name or Password is invalid") </script>' ;
+        echo '<script>alert("Your Login Name or Password is invalid") </script>' ;
       }
    }
 ?>
